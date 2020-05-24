@@ -1,0 +1,13 @@
+{
+  "name": "debug-gpx",
+  "version": "1.0.0",
+  "description": "Slice your GPX files to make it easier to debug",
+  "main": "bin/debug-gpx",
+  "scripts": {},
+  "author": "Nuno Job <nunojobpinto@gmail.com>",
+  "license": "gpl-3.0",
+  "dependencies": {
+    "fast-xml-parser": "^3.17.1",
+    "optimist": "^0.6.1"
+  }
+}

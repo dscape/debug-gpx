@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+const fs = require('fs')
+const XMLParser = require('fast-xml-parser')
+
+var argv = require('optimist').argv
+
+const path = argv.file
+const gpxTxt = fs.readFileSync(path, 'utf8')
+const gpxObj = XMLParser.parse(gpxTxt, { ignoreAttributes: false })
+
+let UserQuit = 0
+let clickedTimes = 0
+let gpxCopy = JSON.parse(JSON.stringify(gpxObj))
+let ptCopy = gpxCopy.gpx.trk.trkseg
+
+const stdin = process.openStdin()
+stdin.setEncoding('utf8')
+
+function restoreFile () {
+  fs.writeFileSync(path, gpxTxt, 'utf8')
+}
+
+function writeSlice (i, j) {
+  ptCopy.trkpt = gpxObj.gpx.trk.trkseg.trkpt.slice(i, j)
+  fs.writeFileSync(path, new XMLParser.j2xParser({
+    ignoreAttributes: false,
+    format: true
+  }).parse(gpxCopy), 'utf8')
+}
+
+if (argv.from && argv.to) {
+  console.log('control+c to exit')
+  writeSlice(+argv.from, +argv.to)
+} else {
+  console.log('press enter to start')
+
+  stdin.on('data', () => {
+    process.stdout.write(`writing ${clickedTimes} trkseg`)
+    gpxCopy = JSON.parse(JSON.stringify(gpxObj))
+    ptCopy = gpxCopy.gpx.trk.trkseg
+    clickedTimes += 1
+    writeSlice(0, clickedTimes)
+  })
+
+  stdin.on('end', restoreFile)
+}
+
+process.on('SIGINT', function () {
+  console.log('putting file back to original state, byee!')
+  if (!UserQuit) {
+    UserQuit = true
+    restoreFile()
+    stdin.destroySoon()
+  } else {
+    process.exit()
+  }
+})
