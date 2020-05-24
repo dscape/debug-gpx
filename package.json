@@ -4,10 +4,16 @@
   "description": "Slice your GPX files to make it easier to debug",
   "main": "bin/debug-gpx",
   "scripts": {},
+  "bin" :  "./bin/debug-gpx" ,
+  "keywords": ["gpx", "fit", "gpxsee", "runparticles", "wtracks", "debug", "slice", "bin", "command line"],
   "author": "Nuno Job <nunojobpinto@gmail.com>",
-  "license": "gpl-3.0",
+  "license": "GPL-3.0-only",
   "dependencies": {
     "fast-xml-parser": "^3.17.1",
     "optimist": "^0.6.1"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/dscape/debug-gpx.git"
   }
 }
